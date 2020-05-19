@@ -6,18 +6,20 @@ pipeline {
                 sh 'ng lint'
             }
         }
-        stage('Build') {
+        stage('Build Angular app') {
             steps {
                 sh 'ng build --prod'
             }
         }
-        stage('Create image') {
-            app = docker.build("capstone")
-        }
-        stage('Push image') {
-            docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-                app.push("${env.BUILD_NUMBER}")
-                app.push("latest")
+        stage('Build and push image') {
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+                        def app = docker.build("capstone")
+                        app.push("${env.BUILD_NUMBER}")
+                        app.push("latest")
+                    }
+                }
             }
         }
     }
