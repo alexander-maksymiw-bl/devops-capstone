@@ -23,7 +23,8 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-                        def app = docker.build("maksimum/capstone:${env.BUILD_NUMBER}")
+                        def app = docker.build("maksimum/capstone")
+                        app.push("${env.BUILD_NUMBER}")
                         app.push("latest")
                     }
                 }
