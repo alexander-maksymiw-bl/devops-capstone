@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: maks-capstone
+  labels:
+    app: maks-capstone
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: maks-capstone
+  template:
+    metadata:
+      labels:
+        app: maks-capstone
+    spec:
+      containers:
+        - name: capstone
+          image: docker.io/maksimum/capstone:latest
+          ports:
+            - containerPort: 80
