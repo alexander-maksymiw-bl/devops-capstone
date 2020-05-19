@@ -17,14 +17,24 @@ pipeline {
             }
         }
         stage('Build and push image') {
+            when {
+                branch 'master'
+            }
             steps {
                 script {
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-                        def app = docker.build("capstone")
-                        app.push("${env.BUILD_NUMBER}")
+                        def app = docker.build("maksimum/capstone:${env.BUILD_NUMBER}")
                         app.push("latest")
                     }
                 }
+            }
+        }
+        stage('Update kubernetes cluster') {
+            when {
+                branch 'master'
+            }
+            steps {
+                sh "kubectl set image deployment/maks-capstone capstone=docker.io/maksimum/capstone:${env.BUILD_NUMBER}"
             }
         }
     }
